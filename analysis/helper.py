@@ -281,33 +281,33 @@ def plot_cest(imaging_paths, cutoff_lower, cutoff_upper, title=""):
     fs = 7
     axes[5].axes.text(-5, 90, ha='left', fontsize=fs,
                       s=f"CEST total \n      mean: {np.round(cest_total_mean,1)}, \
-                          median: {np.round(cest_total_median,1)}, \
-                              sd: {np.round(cest_total_std,1)}, \
-                                  \n      pixels: {cest_total_pixels}, \
-                                      volume: {np.round(cest_total_volume,1)} cm^3")
+    median: {np.round(cest_total_median,1)}, \
+    sd: {np.round(cest_total_std,1)}, \
+    \n      pixels: {cest_total_pixels}")
+    # volume: {np.round(cest_total_volume,1)} cm^3")
     axes[5].axes.text(-5, 65, ha='left', fontsize=fs,
                       s=f"CEST hipp \n      mean: {np.round(cest_hipp_mean,1)}, \
-                          median: {np.round(cest_hipp_median,1)}, \
-                              sd: {np.round(cest_hipp_std,1)}, \
-                                  \n      pixels: {cest_hipp_pixels}, \
-                                      volume: {np.round(cest_hipp_volume,1)} cm^3")
+    median: {np.round(cest_hipp_median,1)}, \
+    sd: {np.round(cest_hipp_std,1)}, \
+    \n      pixels: {cest_hipp_pixels}")
+    # volume: {np.round(cest_hipp_volume,1)} cm^3")
     axes[5].axes.text(-5, 40, ha='left', fontsize=fs,
                       s=f"CEST left \n      mean: {np.round(cest_left_mean,1)}, \
-                          median: {np.round(cest_left_median,1)}, \
-                              sd: {np.round(cest_left_std,1)}, \
-                                  \n      pixels: {cest_left_pixels}, \
-                                      volume: {np.round(cest_left_volume,1)} cm^3")
+    median: {np.round(cest_left_median,1)}, \
+    sd: {np.round(cest_left_std,1)}, \
+    \n      pixels: {cest_left_pixels}")
+    # volume: {np.round(cest_left_volume,1)} cm^3")
     axes[5].axes.text(-5, 15, ha='left', fontsize=fs,
                       s=f"CEST right \n      mean: {np.round(cest_right_mean,1)}, \
-                          median: {np.round(cest_right_median,1)}, \
-                              sd: {np.round(cest_right_std,1)}, \
-                                  \n      pixels: {cest_right_pixels}, \
-                                      volume: {np.round(cest_right_volume,1)} cm^3")
+    median: {np.round(cest_right_median,1)}, \
+    sd: {np.round(cest_right_std,1)}, \
+    \n      pixels: {cest_right_pixels}")
+    # volume: {np.round(cest_right_volume,1)} cm^3")
     axes[5].axes.text(-5, 0, ha='left', fontsize=fs,
-                      s=f"Hippocampus 3D volume \n      total: \
-                          {np.round(hipp_total_volume,1)}, \
-                              left: {np.round(hipp_left_volume,1)}, \
-                                  right: {np.round(hipp_right_volume,1)} cm^3")
+                      s=f"Hippocampus 3D volume \n\
+    total: {np.round(hipp_total_volume,1)}, \
+    left: {np.round(hipp_left_volume,1)}, \
+    right: {np.round(hipp_right_volume,1)} cm^3")
 
     return [cest_total_mean, cest_total_median, cest_total_std, cest_total_pixels, cest_total_volume,
             cest_hipp_mean, cest_hipp_median, cest_hipp_std, cest_hipp_pixels, cest_hipp_volume,

@@ -87,6 +87,7 @@ for i in range(len(FILES)):
         FILES, SUBJECT, reslice=False)
     values = hp.plot_cest(imaging_paths, cutoff_lower=const.CUTOFF[0],
                           cutoff_upper=const.CUTOFF[1], title=FILES["sub"][SUBJECT])
+
     data = data.append(dict(sub=FILES["sub"][SUBJECT],
                        group=FILES["group"][SUBJECT]), ignore_index=True)
     data.iloc[i, 2:] = values
@@ -324,7 +325,7 @@ axes.spines['right'].set_visible(False)
 
 
 # =============================================================================
-# Truing out linear regression models
+# Trying out linear regression models
 # =============================================================================
 
 
@@ -337,7 +338,7 @@ model_fit = model.fit()
 params = model_fit.params
 print(model_fit.summary())
 
-
+########  Trying random stuff out with linear regression
 pred_ols = model_fit.get_prediction()
 iv_l = pred_ols.summary_frame()["obs_ci_lower"]
 iv_u = pred_ols.summary_frame()["obs_ci_upper"]
@@ -493,7 +494,7 @@ axes[0].legend(handles=[patch_left, patch_right],
 # Make individual plots for manuscript
 # =============================================================================
 
-i = 11
+i = 18
 SUBJECT = i
 name = FILES["sub"][SUBJECT]
 imaging_paths = hp.reslice_wrapper(FILES, SUBJECT, reslice=False)
@@ -741,93 +742,3 @@ plt.savefig(
     f"plots/summary_figure/{FILES['sub'][SUBJECT]}_cest_distribution.pdf", dpi=600, bbox_inches='tight')
 
 
-# %% Old exploratiion of data
-cest = nib.load(FILES.loc[0, "cest"]).get_fdata()
-hipp = nib.load(FILES.loc[0, "hipp"]).get_fdata()
-t2 = nib.load(FILES.loc[0, "T2"]).get_fdata()
-
-
-cest.min()
-
-img_cest = nib.load(FILES.loc[0, "cest"])
-img_hipp = nib.load(FILES.loc[0, "hipp"])
-img_t2 = nib.load(FILES.loc[0, "T2"])
-
-img_t2_resclice = nibabel.processing.conform(img_t2)
-nib.save(img_t2_resclice, 'C004_T2_resclice.nii')
-img_hipp_resclice = nibabel.processing.conform(img_hipp)
-nib.save(img_hipp_resclice, 'C004_hipp_resclice.nii')
-
-img_cest_reslice = nibabel.processing.conform(img_cest)
-
-
-cest_3D = cest.reshape((cest.shape[0], cest.shape[1], 1))
-img1_new = nib.Nifti1Image(cest_3D, img_cest.affine, img_cest.header)
-
-nib.save(img1_new, 'C004_cest_3D.nii')
-
-img1_3d = nib.load('C004_cest_3D.nii')
-
-
-tmp1 = nibabel.processing.conform(img1_3d)
-
-nib.save(tmp1, 'C004_cest_3D_resclice.nii')
-
-
-cest2 = nib.load(FILES.loc[0, "cest"]).get_fdata()
-t2_2 = nib.load("data/images/7T_C004/tmp/t2_to_cest.nii").get_fdata()
-hipp_2 = nib.load("data/images/7T_C004/tmp/seg_to_cest.nii").get_fdata()
-hipp_2 = hipp_2.reshape((hipp_2.shape[0], hipp_2.shape[1]))
-t2_2 = t2_2.reshape((t2_2.shape[0], t2_2.shape[1]))
-
-
-sns.heatmap(t2_2, square=True)
-sns.heatmap(cest, square=True)
-sns.heatmap(hipp_2, square=True)
-
-hipp_2.min()
-hipp_2.max()
-
-hipp_2[hipp_2 == 0] = np.nan
-cest2_nan = copy.deepcopy(cest2)
-
-cest2_nan[cest2 < const.CUTOFF[0]] = np.nan
-cest2_nan[cest2 > const.CUTOFF[1]] = np.nan
-
-fig, axes = hp.plot_make(r=1, c=3, size_length=8)
-sns.heatmap(t2_2, square=True, ax=axes[0], cbar=False,
-            xticklabels=False, yticklabels=False, cmap="Greys_r")
-sns.heatmap(t2_2, square=True, ax=axes[1], cbar=False,
-            xticklabels=False, yticklabels=False, cmap="Greys_r")
-sns.heatmap(t2_2, square=True, ax=axes[2], cbar=False,
-            xticklabels=False, yticklabels=False, cmap="Greys_r")
-sns.heatmap(cest2_nan, square=True, ax=axes[1], cbar=False,
-            xticklabels=False, yticklabels=False, vmin=0, vmax=20)
-sns.heatmap(cest2_nan, square=True, ax=axes[2], cbar=False,
-            xticklabels=False, yticklabels=False,
-            mask=~(np.logical_or(hipp_2 == 1, hipp_2 == 2)),
-            vmin=0, vmax=20)
-# sns.heatmap(hipp_2, square=True, ax=axes[1], cbar=False,
-# xticklabels=False, yticklabels=False)
-
-
-fig, axes = hp.plot_make(r=2, c=1, size_height=8)
-sns.histplot(cest2_nan.flatten(), ax=axes[0], binrange=[0.25, 20], binwidth=0.25)
-sns.histplot(cest2_nan[hipp_2 == 1], ax=axes[0], binrange=[
-             0.25, 20], binwidth=0.25, color="red")
-sns.histplot(cest2_nan[hipp_2 == 2], ax=axes[0], binrange=[
-             0.25, 20], binwidth=0.25, color="purple")
-sns.ecdfplot(cest2.flatten(), ax=axes[1])
-sns.ecdfplot(cest2[hipp_2 == 1], ax=axes[1], color="red")
-sns.ecdfplot(cest2[hipp_2 == 2], ax=axes[1], color="purple")
-axes[1].set_xlim([0.25, 20])
-
-hipp_left = (hipp_2 == 1).astype(int)
-vol_left = np.sum(hipp_left)
-left = hipp_left * cest2
-left_nan = hipp_left * cest2_nan
-
-
-sns.heatmap(left, square=True)
-
-# %%

@@ -132,11 +132,16 @@ CHOP_11_T2 = (PATH_IMAGES + "CHOP_11/" + "layer_000_878ff7059c6b6b612cb280515e2c
 CHOP_11_HIPP = PATH_IMAGES + "CHOP_11/" + "lr_segmentation.nii.gz"
 CHOP_11_CEST = PATH_IMAGES + "CHOP_11/" + "b0b1correctedcestmap.nii"
 
+CHOP_12_T1 = (PATH_IMAGES + "CHOP_12/" + "none")
+CHOP_12_T2 = (PATH_IMAGES + "CHOP_12/" + "T2.nii")
+CHOP_12_HIPP = PATH_IMAGES + "CHOP_12/" + "lr_segmentation.nii.gz"
+CHOP_12_CEST = PATH_IMAGES + "CHOP_12/" + "b0b1correctedcestmap.nii"
+
 # %%
 NAMES_CONTROL = ["C004", "C005", "C006", "C007", "C008", "C009", "C010", "C011", "C013",
                  "C015"]
 NAMES_PATIENTS = ["CHOP_03", "CHOP_04", "CHOP_05",
-                  "CHOP_06", "CHOP_07", "CHOP_08", "CHOP_10", "CHOP_11"]
+                  "CHOP_06", "CHOP_07", "CHOP_08", "CHOP_10", "CHOP_11", "CHOP_12"]
 
 
 FILES = FILES.append(
@@ -334,6 +339,17 @@ FILES = FILES.append(
         T2=CHOP_11_T2,
         hipp=CHOP_11_HIPP,
         cest=CHOP_11_CEST,
+    ),
+    ignore_index=True,
+)
+FILES = FILES.append(
+    dict(
+        sub="CHOP_12",
+        group="patient",
+        T1=CHOP_12_T1,
+        T2=CHOP_12_T2,
+        hipp=CHOP_12_HIPP,
+        cest=CHOP_12_CEST,
     ),
     ignore_index=True,
 )
