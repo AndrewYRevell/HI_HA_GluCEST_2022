@@ -159,30 +159,36 @@ def plot_cest(imaging_paths, cutoff_lower, cutoff_upper, title=""):
     # calculating summary stats
     cest_total_mean = np.nanmean(cest_nan)
     cest_total_median = np.nanmedian(cest_nan)
-    cest_total_std = np.nanstd(cest_nan)
+    cest_total_std = np.nanstd(cest_nan)#/cest_total_mean
     cest_total_pixels = len(cest_nan[~np.isnan(cest_nan)])
     cest_total_volume = cest_total_pixels * cest_voxel_volume / 1000
 
     cest_hipp = cest_nan[np.logical_or(hipp == 1, hipp == 2)]
     cest_hipp_mean = np.nanmean(cest_hipp)
     cest_hipp_median = np.nanmedian(cest_hipp)
-    cest_hipp_std = np.nanstd(cest_hipp)
+    cest_hipp_std = np.nanstd(cest_hipp)#/cest_hipp_mean
     cest_hipp_pixels = len(cest_hipp)
     cest_hipp_volume = cest_hipp_pixels * cest_voxel_volume / 1000
 
     cest_left = cest_nan[hipp == 1]
     cest_left_mean = np.nanmean(cest_left)
     cest_left_median = np.nanmedian(cest_left)
-    cest_left_std = np.nanstd(cest_left)
+    cest_left_std = np.nanstd(cest_left)#/cest_left_mean
     cest_left_pixels = len(cest_left)
     cest_left_volume = cest_left_pixels * cest_voxel_volume / 1000
 
     cest_right = cest_nan[hipp == 2]
     cest_right_mean = np.nanmean(cest_right)
     cest_right_median = np.nanmedian(cest_right)
-    cest_right_std = np.nanstd(cest_right)
+    cest_right_std = np.nanstd(cest_right)#/cest_right_mean
     cest_right_pixels = len(cest_right)
     cest_right_volume = cest_right_pixels * cest_voxel_volume / 1000
+
+
+    #Calculate assymmetry
+    # AI = [  [|L -R|] / [L+R]   ] * 100
+    AI = np.abs(cest_left_mean - cest_right_mean) / (cest_left_mean + cest_right_mean) *100
+
 
     # Making 3d hippocampus image conform to 256x256x256 and 1x1x1mm so that we can
     # compare across patients for volume in mm rather than pixels
@@ -313,7 +319,7 @@ def plot_cest(imaging_paths, cutoff_lower, cutoff_upper, title=""):
             cest_hipp_mean, cest_hipp_median, cest_hipp_std, cest_hipp_pixels, cest_hipp_volume,
             cest_left_mean, cest_left_median, cest_left_std, cest_left_pixels, cest_left_volume,
             cest_right_mean, cest_right_median, cest_right_std, cest_right_pixels, cest_right_volume,
-            hipp_total_volume, hipp_left_volume, hipp_right_volume]
+            hipp_total_volume, hipp_left_volume, hipp_right_volume, AI]
 
 # %%
 

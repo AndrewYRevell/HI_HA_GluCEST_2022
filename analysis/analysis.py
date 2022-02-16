@@ -70,7 +70,7 @@ data = pd.DataFrame(columns=["sub", "group", "cest_total_mean", "cest_total_medi
                              "cest_left_median", "cest_left_std", "cest_left_pixels",
                              "cest_left_volume", "cest_right_mean", "cest_right_median",
                              "cest_right_std", "cest_right_pixels", "cest_right_volume",
-                             "hipp_total_volume", "hipp_left_volume", "hipp_right_volume"])
+                             "hipp_total_volume", "hipp_left_volume", "hipp_right_volume", "asymmetry_index"])
 # %% Rescliec and plot
 # =============================================================================
 # Resclice images and plot
@@ -127,7 +127,7 @@ data_drop.to_csv("analysis/CEST_measurements.csv")
 
 statistics =  pd.DataFrame(columns=["measurement", "control_mean", "control_sd", "HIHA_mean", "HIHA_sd", "pvalue"])
 
-for s in range(2, 22):
+for s in range(2, 23):
     MEASURE = data_drop.columns[s]
     print(f"{s}, {MEASURE}")
     v1 = data.loc[data['group'] == "control", MEASURE]
@@ -137,6 +137,9 @@ for s in range(2, 22):
     HIHA_mean = np.nanmean(v2)
     HIHA_sd = np.nanstd(v2)
     pvalue = st.mannwhitneyu(v1, v2)[1]
+    pvalue = st.ttest_ind(v1, v2)[1]
+
+
     statistics = statistics.append(dict(measurement=MEASURE, control_mean = control_mean,
                        control_sd = control_sd, HIHA_mean = HIHA_mean, HIHA_sd = HIHA_sd,
                        pvalue= pvalue), ignore_index=True)
@@ -147,8 +150,8 @@ statistics.to_csv("analysis/CEST_statistics_table.csv")
 # Plot comparisons of subjects and controls
 # =============================================================================
 
-MEASURE = "cest_hipp_std"
-TITLE = "Hippocampus CEST Variation (standard deviation)"
+MEASURE = "asymmetry_index"
+TITLE = MEASURE
 
 fig, axes = hp.plot_make(r=1, c=1)
 sns.violinplot(data=data, x="group", y=MEASURE, ax=axes)
@@ -217,6 +220,7 @@ def plot_group_comparison(measure, data, ylim=None, size_length=10.5, size_heigh
     control_95ci = st.t.interval(alpha=0.95, df=len(v1)-1, loc=np.mean(v1), scale=st.sem(v1))
     patient_95ci = st.t.interval(alpha=0.95, df=len(v1)-1, loc=np.mean(v2), scale=st.sem(v2))
     pvalue = st.mannwhitneyu(v1, v2)[1]
+    pvalue = st.ttest_ind(v1, v2)[1]
     print(pvalue)
 
     axes.spines['top'].set_visible(False)
@@ -230,12 +234,12 @@ def plot_group_comparison(measure, data, ylim=None, size_length=10.5, size_heigh
 
 # %%
 data.columns
-MEASURE = "cest_hipp_std"
-plot_group_comparison("cest_hipp_std", data, ylim=[1, 4.2], size_length=7, size_height=8.5,
+MEASURE = "asymmetry_index"
+plot_group_comparison("asymmetry_index", data,  size_length=7, size_height=8.5,
                       line_width_axes=6, ms=12, capthick=5, elinewidth=6,
                       capsize=17, stripplot_size=10, line_width_boxplot=5,
                       boxplot_width=0.4, err_bar_position_1=0.35, err_bar_position_2=1.35)
-plt.savefig("plots/figure_03/cest_hipp_std.pdf", dpi=600)
+plt.savefig("plots/figure_03/asymmetry_index.pdf", dpi=600)
 
 
 plot_group_comparison("cest_hipp_pixels", data,  size_length=3, size_height=3,
@@ -624,7 +628,7 @@ peak_cest_control_sd = np.std(peak_cest_control)
 
 # %%Plots for summary figure
 # i = 16 for CHOP 10, and i = 8 for control 13, i =7 for C 11
-i = 7
+i = 16
 SUBJECT = i
 imaging_paths = hp.reslice_wrapper(FILES, SUBJECT, reslice=False)
 
@@ -702,6 +706,8 @@ sns.heatmap(cest_nan[x_1:x_2, y_1:y_2], ax=axes, cmap="magma", center=CENTER,
             cbar=True, vmin=VMIN, vmax=VMAX,
             cbar_ax=cb_ax, square=True, xticklabels=False, yticklabels=False,
             mask=~(np.logical_or(hipp[x_1:x_2, y_1:y_2] == 1, hipp[x_1:x_2, y_1:y_2] == 2)))
+
+
 plt.savefig(
     f"plots/summary_figure/{FILES['sub'][SUBJECT]}_cest.pdf", dpi=600, bbox_inches='tight')
 
