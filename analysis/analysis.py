@@ -27,6 +27,8 @@ import matplotlib.patches as mpatches
 from sklearn import datasets, linear_model
 import analysis.helper as hp
 import analysis.constants as const
+import scipy.ndimage
+
 
 # %% CEST spreadsheet analysis
 # =============================================================================
@@ -627,8 +629,8 @@ peak_cest_control_sd = np.std(peak_cest_control)
 
 
 # %%Plots for summary figure
-# i = 16 for CHOP 10, and i = 8 for control 13, i =7 for C 11
-i = 16
+# i = 16 for CHOP 10, and i = 8 for control 13, i =7 for C 11, i = 12 for CHOP 5
+i = 12
 SUBJECT = i
 imaging_paths = hp.reslice_wrapper(FILES, SUBJECT, reslice=False)
 
@@ -665,6 +667,8 @@ cest = cest.reshape((cest.shape[0], cest.shape[1]))
 hipp = hipp.reshape((hipp.shape[0], hipp.shape[1]))
 t2 = t2.reshape((t2.shape[0], t2.shape[1]))
 
+
+cest = scipy.ndimage.gaussian_filter(cest, sigma=1)
 # removing data that falls out of range (artifacts) and converting them to Nans
 cest_nan = copy.deepcopy(cest)
 cest_nan[cest < cutoff_lower] = np.nan
@@ -687,6 +691,8 @@ if i == 16:
     x_1, x_2, y_1, y_2, t2_cent = 57, 151, 98, 154, 550  # for CHOP 10
 if i == 7:
     x_1, x_2, y_1, y_2, t2_cent = 63, 157, 108, 164, 150  # for Control 11
+if i == 12:
+    x_1, x_2, y_1, y_2, t2_cent = 56, 150, 92, 148, 550  # for CHOP 5
 
 VMIN = 2
 VMAX = 15
@@ -706,6 +712,7 @@ sns.heatmap(cest_nan[x_1:x_2, y_1:y_2], ax=axes, cmap="magma", center=CENTER,
             cbar=True, vmin=VMIN, vmax=VMAX,
             cbar_ax=cb_ax, square=True, xticklabels=False, yticklabels=False,
             mask=~(np.logical_or(hipp[x_1:x_2, y_1:y_2] == 1, hipp[x_1:x_2, y_1:y_2] == 2)))
+
 
 
 plt.savefig(
