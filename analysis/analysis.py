@@ -251,9 +251,9 @@ plot_group_comparison("cest_hipp_pixels", data,  size_length=3, size_height=3,
 plt.savefig("plots/figure_03/cest_hipp_pixels.pdf", dpi=600)
 
 
-plot_group_comparison("peak_cest", data, ylim=[7.5, 13],  size_length=3, size_height=3,
-                      line_width_axes=6, ms=5, capthick=2, elinewidth=2,
-                      capsize=8, stripplot_size=4, line_width_boxplot=1,
+plot_group_comparison("peak_cest", data, ylim=[7.5, 13], size_length=7, size_height=8.5,
+                      line_width_axes=6, ms=12, capthick=5, elinewidth=6,
+                      capsize=17, stripplot_size=10, line_width_boxplot=5,
                       boxplot_width=0.4, err_bar_position_1=0.35, err_bar_position_2=1.35)
 
 plt.savefig("plots/figure_03/peak_cest.pdf", dpi=600)

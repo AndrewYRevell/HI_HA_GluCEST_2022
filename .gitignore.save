@@ -1,6 +1,8 @@
-data/data_from_rosenfeld
+data/da
+ta_from_rosenfeld
 data/images
 report/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -8,6 +10,8 @@ __pycache__/
 
 # C extensions
 *.so
+
+
 
 # Distribution / packaging
 .Python
